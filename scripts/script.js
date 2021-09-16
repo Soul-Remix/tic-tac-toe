@@ -140,15 +140,21 @@ const checkWin = function (player) {
 };
 
 function random() {
-  const game = cell;
-  let num = 0;
+  const game = cell.map((val) => {
+    return val.textContent;
+  });
 
-  for (i = 0; i < game.length; i++) {
-    if (game[i].textContent === '') {
-      num = i;
-    }
+  let num = Math.floor(Math.random() * 9);
+
+  if (game.every((val) => val !== '')) {
+    return 1;
   }
-  return num;
+
+  if (game[num] === '') {
+    return num;
+  } else {
+    return random();
+  }
 }
 
 function gameOver() {

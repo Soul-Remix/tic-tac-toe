@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
   background-color: white;
 }
 
@@ -22,7 +22,7 @@ header {
   text-align: center;
   color: var(--black);
   text-shadow: 2px 3px var(--red);
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .result {
@@ -85,7 +85,7 @@ header {
 }
 
 table {
-  min-width: 330px;
+  min-width: 300px;
   max-width: 600px;
   width: 60%;
   min-height: 400px;

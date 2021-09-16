@@ -10,6 +10,17 @@ const cell = Array.from(document.querySelectorAll('.cell'));
 const resBtn = document.querySelector('.res-btn');
 const para = document.querySelector('.result');
 
+const winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [6, 4, 2],
+];
+
 let hu = false;
 let bo = false;
 
@@ -58,8 +69,7 @@ human.addEventListener('click', function (e) {
 
 resBtn.addEventListener('click', function () {
   dis.hide();
-  const newboard = new Gameboard();
-  newboard.forEach((obj) => {
+  cell.forEach((obj) => {
     obj.textContent = '';
   });
   para.textContent = '';
@@ -75,55 +85,32 @@ const Player = function (name) {
 const playerX = new Player('X');
 const playerO = new Player('O');
 
-const Gameboard = function () {
-  const gameboard = cell;
-  return gameboard;
-};
-
 let turn = true;
 
 const startGame = function (one, two) {
-  const game = new Gameboard();
   function play(e) {
-    if (
-      e.target.textContent === '' &&
-      checkWin('X') !== true &&
-      checkWin('O') !== true
-    ) {
+    if (e.target.textContent === '' && !gameOver()) {
       if (turn === true) {
         e.target.textContent = one.name;
         turn = false;
         para.textContent = 'O player Turn';
-        if (checkWin('X')) {
-          para.textContent = 'X Player Win';
-          turn = true;
-          return;
-        }
+        checkWin('X');
+        checkWin('O');
       } else if (turn === false && bo === false) {
         e.target.textContent = two.name;
         turn = true;
         para.textContent = 'X player Turn';
-        if (checkWin('O')) {
-          para.textContent = 'O Player Win';
-          turn = true;
-          return;
-        }
+        checkWin('X');
+        checkWin('O');
       }
       while (turn === false && bo === true) {
-        game[random()].textContent = two.name;
+        cell[random()].textContent = two.name;
         turn = true;
         para.textContent = 'X player Turn';
-        if (checkWin('O')) {
-          para.textContent = 'O Player Win';
-          turn = true;
-          return;
-        }
+        checkWin('X');
+        checkWin('O');
       }
-    } else if (checkWin('X') === true || checkWin('O') === true) {
-      turn = true;
-      return;
-    } else if (checkWin('X') === 'Draw' || checkWin('O') === 'Draw') {
-      para.textContent = "It's a draw";
+    } else if (gameOver()) {
       turn = true;
       return;
     }
@@ -137,35 +124,15 @@ const startGame = function (one, two) {
 };
 
 const checkWin = function (player) {
-  const board = new Gameboard();
-  const game = board.map((val) => {
+  const game = cell.map((val) => {
     return val.textContent;
   });
 
-  if (
-    (game[0] == player && game[1] == player && game[2] == player) ||
-    (game[3] == player && game[4] == player && game[5] == player) ||
-    (game[6] == player && game[7] == player && game[8] == player)
-  ) {
+  if (winMoves(winCombos, player, game)) {
+    para.textContent = `${player} Player Wins`;
     return true;
-  } else if (
-    (game[0] == player && game[3] == player && game[6] == player) ||
-    (game[1] == player && game[4] == player && game[7] == player) ||
-    (game[2] == player && game[5] == player && game[8] == player)
-  ) {
-    return true;
-  } else if (
-    (game[0] == player && game[4] == player && game[8] == player) ||
-    (game[2] == player && game[4] == player && game[6] == player)
-  ) {
-    return true;
-  } else if (
-    game.every((val) => {
-      if (val !== '') {
-        return true;
-      }
-    })
-  ) {
+  } else if (game.every((val) => val !== '')) {
+    para.textContent = "It's a draw";
     return 'Draw';
   } else {
     return false;
@@ -173,7 +140,7 @@ const checkWin = function (player) {
 };
 
 function random() {
-  const game = new Gameboard();
+  const game = cell;
   let num = 0;
 
   for (i = 0; i < game.length; i++) {
@@ -182,4 +149,20 @@ function random() {
     }
   }
   return num;
+}
+
+function gameOver() {
+  return checkWin('X') === true || checkWin('O') === true;
+}
+
+function winMoves(arr, player, game) {
+  for (let i = 0; i < arr.length; i++) {
+    if (
+      game[arr[i][0]] === player &&
+      game[arr[i][1]] === player &&
+      game[arr[i][2]] === player
+    ) {
+      return true;
+    }
+  }
 }
